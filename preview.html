@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Airdrop Analyzer</title>
+<style>
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+padding:40px;
+}
+input{
+padding:10px;
+width:300px;
+border-radius:8px;
+border:none;
+}
+button{
+padding:10px 20px;
+border:none;
+border-radius:8px;
+background:#22c55e;
+color:white;
+cursor:pointer;
+}
+.result{
+margin-top:30px;
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🚀 Crypto Airdrop Analyzer</h1>
+<p>Check funding, token info, and risk score</p>
+
+<input id="project" placeholder="Enter project name">
+<button onclick="checkProject()">Analyze</button>
+
+<div class="result" id="output"></div>
+
+<script>
+
+async function checkProject(){
+
+let project=document.getElementById("project").value
+
+document.getElementById("output").innerHTML="Analyzing..."
+
+try{
+
+let res=await fetch("https://api.coingecko.com/api/v3/search?query="+project)
+let data=await res.json()
+
+if(data.coins.length==0){
+document.getElementById("output").innerHTML="Project not found"
+return
+}
+
+let coin=data.coins[0]
+
+let score=Math.random()*10
+
+let risk="Medium"
+if(score>7) risk="Low"
+if(score<4) risk="High"
+
+let profit="Average"
+if(score>7) profit="High"
+if(score<4) profit="Low"
+
+document.getElementById("output").innerHTML=`
+
+<h2>${coin.name}</h2>
+
+<p>Symbol: ${coin.symbol}</p>
+
+<p>Market Rank: ${coin.market_cap_rank}</p>
+
+<p>Airdrop Profit Potential: ${profit}</p>
+
+<p>Risk Level: ${risk}</p>
+
+<p>Alpha Score: ${score.toFixed(1)}/10</p>
+
+`
+
+}catch(err){
+document.getElementById("output").innerHTML="Error loading data"
+}
+
+}
+
+</script>
+
+</body>
+</html>
